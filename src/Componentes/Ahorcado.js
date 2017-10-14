@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Imagen from './Imagen';
 import Botonera from './Botonera';
 import PalabraAdivinadaHastaElMomento from './PalabraAdivinadaHastaElMomento';
+import Dialog from 'react-bootstrap-dialog';
 
 class Ahorcado extends Component {
   constructor(props){
@@ -11,6 +12,7 @@ class Ahorcado extends Component {
     this.sePulsoBoton = this.sePulsoBoton.bind(this);
     this.getPalabraAAdivinar = this.getPalabraAAdivinar.bind(this);
     this.getPalabraAdivinadaHastaElMomento = this.getPalabraAdivinadaHastaElMomento.bind(this);
+    this.openModal = this.openModal.bind(this);
 
     let palabraAAdivinar = this.getPalabraAAdivinar();
 
@@ -74,11 +76,11 @@ class Ahorcado extends Component {
 
   componentDidUpdate(){
     if(this.state.numAciertos == this.state.palabraAAdivinar.length){
-      alert("Ganaste");
+      this.openModal("¡Ganaste!");
       this.reinicilizar();
     } 
     if(this.state.numFallos == 6){
-      alert("Perdiste");
+      this.openModal("¡Perdiste!");
       this.reinicilizar();
     }
   }
@@ -119,9 +121,24 @@ class Ahorcado extends Component {
           <PalabraAdivinadaHastaElMomento 
             PalabraAdivinadaHastaElMomento={this.state.palabraAdivinadaHastaElMomento} />
           <Botonera sePulsoBoton={(i) => this.sePulsoBoton(i)} botones={this.state.botones}/>
+          <Dialog ref={(el) => { this.dialog = el }} />
         </div>
     );
   }
+
+  openModal(mensaje){
+    this.dialog.show({
+      title: mensaje,
+      body: 'La palabra era ' + this.state.palabraAAdivinar + ". Pulsa Ok para jugar otra vez",
+      actions: [
+        Dialog.OKAction()
+      ],
+      bsSize: 'small',
+    })
+  }
+
 }
+
+
 
 export default Ahorcado;
